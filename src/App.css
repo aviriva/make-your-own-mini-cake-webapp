@@ -395,6 +395,7 @@ body {
 /* ── confirm ── */
 .confirm-wrap {
   flex: 1; display: flex; flex-direction: column;
+  font-variant-ligatures: none;
   align-items: center; justify-content: center;
   padding: 2rem 1.5rem; gap: 1rem; text-align: center;
 }
