@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 
 // ─────────────────────────────────────────────
@@ -170,29 +170,6 @@ const TOPPING_IMGS = {
 const WINDOW_BG = windowBgSrc;
 
 // ─────────────────────────────────────────────
-//  PRELOAD — force browser to cache every image
-//  on mount so there's no flicker on first use
-// ─────────────────────────────────────────────
-const ALL_SRCS = [
-  WINDOW_BG,
-  ...Object.values(CAKE_BASE_IMGS),
-  ...Object.values(CAKE_TOP_IMGS),
-  ...Object.values(FROSTING_BASE_IMGS),
-  ...Object.values(FROSTING_TOP_IMGS),
-  ...Object.values(FILLING_IMGS),
-  ...Object.values(TOPPING_IMGS),
-].filter(Boolean);
-
-function usePreloadImages() {
-  useEffect(() => {
-    ALL_SRCS.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
-}
-
-// ─────────────────────────────────────────────
 //  DATA
 // ─────────────────────────────────────────────
 
@@ -298,6 +275,8 @@ function Thumb({ item, selected, onClick, imgSrc }) {
 
 // ─────────────────────────────────────────────
 //  CANVAS EXPORT
+//  Draws all visible layer srcs onto a canvas
+//  and triggers a PNG download.
 // ─────────────────────────────────────────────
 async function downloadCakeImage(layerSrcs, filename = "my-cake.PNG") {
   const SIZE = 600;
@@ -311,8 +290,11 @@ async function downloadCakeImage(layerSrcs, filename = "my-cake.PNG") {
     await new Promise((resolve) => {
       const img = new Image();
       img.crossOrigin = "anonymous";
-      img.onload = () => { ctx.drawImage(img, 0, 0, SIZE, SIZE); resolve(); };
-      img.onerror = resolve;
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, SIZE, SIZE);
+        resolve();
+      };
+      img.onerror = resolve; // skip broken images
       img.src = src;
     });
   }
@@ -327,18 +309,21 @@ async function downloadCakeImage(layerSrcs, filename = "my-cake.PNG") {
 //  CAKE PREVIEW
 // ─────────────────────────────────────────────
 function CakePreview({ sponge, frostingFlavor, filling, fillingVisited, toppings, randomBase, stageRef }) {
-  const [topCakeIn,        setTopCakeIn]        = useState(false);
-  const [topFrostingIn,    setTopFrostingIn]    = useState(false);
-  const [toppingsIn,       setToppingsIn]       = useState(false);
+  const [topCakeIn,      setTopCakeIn]      = useState(false);
+  const [topFrostingIn,  setTopFrostingIn]  = useState(false);
+  const [toppingsIn,     setToppingsIn]     = useState(false);
+  // track which individual toppings have animated in (for manual picks)
   const [animatedToppings, setAnimatedToppings] = useState(new Set());
 
-  const animationReady = !!sponge && !!frostingFlavor && fillingVisited;
+  const animationReady =
+    !!sponge &&
+    !!frostingFlavor &&
+    fillingVisited;
 
   const lastAnimatedCombo = useRef(null);
-  const timers            = useRef([]);
-  const prevToppings      = useRef(toppings || []);
+  const timers = useRef([]);
+  const prevToppings = useRef(toppings || []);
 
-  // main animation sequence
   useEffect(() => {
     const currentCombo = animationReady ? `${sponge}|${frostingFlavor}|${filling}` : null;
 
@@ -368,24 +353,39 @@ function CakePreview({ sponge, frostingFlavor, filling, fillingVisited, toppings
     return () => timers.current.forEach(clearTimeout);
   }, [sponge, frostingFlavor, filling, animationReady]);
 
-  // individual topping animation on manual pick
+  // animate individually selected toppings in as they're toggled on
   useEffect(() => {
     const prev = new Set(prevToppings.current);
     const curr = new Set(toppings || []);
 
-    const added   = [...curr].filter(t => !prev.has(t));
-    const removed = [...prev].filter(t => !curr.has(t));
+    // find newly added toppings
+    const added = [...curr].filter(t => !prev.has(t));
 
     if (added.length > 0) {
-      setAnimatedToppings(s => { const n = new Set(s); added.forEach(t => n.delete(t)); return n; });
+      // briefly remove from animated set, then add back to re-trigger
+      setAnimatedToppings(prev => {
+        const next = new Set(prev);
+        added.forEach(t => next.delete(t));
+        return next;
+      });
       const tid = setTimeout(() => {
-        setAnimatedToppings(s => { const n = new Set(s); added.forEach(t => n.add(t)); return n; });
+        setAnimatedToppings(prev => {
+          const next = new Set(prev);
+          added.forEach(t => next.add(t));
+          return next;
+        });
       }, 30);
       timers.current.push(tid);
     }
 
+    // removed toppings — just drop from animated set
+    const removed = [...prev].filter(t => !curr.has(t));
     if (removed.length > 0) {
-      setAnimatedToppings(s => { const n = new Set(s); removed.forEach(t => n.delete(t)); return n; });
+      setAnimatedToppings(prev => {
+        const next = new Set(prev);
+        removed.forEach(t => next.delete(t));
+        return next;
+      });
     }
 
     prevToppings.current = toppings || [];
@@ -395,15 +395,15 @@ function CakePreview({ sponge, frostingFlavor, filling, fillingVisited, toppings
   const activeFrosting = frostingFlavor || null;
   const activeFilling  = filling        || null;
 
-  const cakeBaseSrc     = CAKE_BASE_IMGS[activeSponge]                            || null;
-  const cakeTopSrc      = CAKE_TOP_IMGS[activeSponge]                             || null;
-  const frostingBaseSrc = activeFrosting ? (FROSTING_BASE_IMGS[activeFrosting]    || null) : null;
-  const frostingTopSrc  = activeFrosting ? (FROSTING_TOP_IMGS[activeFrosting]     || null) : null;
-  const fillingSrc      = activeFilling  ? (FILLING_IMGS[activeFilling]            || null) : null;
+  const cakeBaseSrc     = CAKE_BASE_IMGS[activeSponge]                          || null;
+  const cakeTopSrc      = CAKE_TOP_IMGS[activeSponge]                           || null;
+  const frostingBaseSrc = activeFrosting ? (FROSTING_BASE_IMGS[activeFrosting]  || null) : null;
+  const frostingTopSrc  = activeFrosting ? (FROSTING_TOP_IMGS[activeFrosting]   || null) : null;
+  const fillingSrc      = activeFilling  ? (FILLING_IMGS[activeFilling]          || null) : null;
   const toppingSrcs     = (toppings || []).map(t => ({ id: t, src: TOPPING_IMGS[t] || null })).filter(t => t.src);
 
   const allLayerSrcs = [
-    WINDOW_BG,
+    WINDOW_BG || null,
     cakeBaseSrc,
     frostingBaseSrc,
     fillingSrc,
@@ -412,39 +412,44 @@ function CakePreview({ sponge, frostingFlavor, filling, fillingVisited, toppings
     ...toppingSrcs.map(t => t.src),
   ].filter(Boolean);
 
-  useEffect(() => { if (stageRef) stageRef.current = allLayerSrcs; });
+  useEffect(() => {
+    if (stageRef) stageRef.current = allLayerSrcs;
+  });
 
+  // for randomize: all toppings animate together via toppingsIn
+  // for manual picks: each topping animates individually via animatedToppings
   function getToppingClass(id) {
-    // randomize path: all toppings in together
-    if (animationReady && lastAnimatedCombo.current) return toppingsIn ? "drop-in" : "pre-drop";
-    // manual pick path: individual
+    // if animation sequence is running (randomize path), use toppingsIn
+    if (animationReady && lastAnimatedCombo.current) {
+      return toppingsIn ? "drop-in" : "pre-drop";
+    }
+    // manual pick path
     return animatedToppings.has(id) ? "drop-in" : "pre-drop";
   }
 
   return (
     <div className="cake-stage">
-
-      {/* key props prevent src-swap flicker — React creates a fresh element per flavor */}
       {WINDOW_BG && (
-        <img key="window-bg" src={WINDOW_BG} alt="" className="cake-layer" style={{ objectFit: "cover" }} />
+        <img src={WINDOW_BG} alt="" className="cake-layer" style={{ objectFit: "cover" }} />
       )}
 
       {cakeBaseSrc
-        ? <img key={`cake-base-${activeSponge}`} src={cakeBaseSrc} alt="cake base" className="cake-layer" />
-        : <div className="cake-layer cake-placeholder-layer"><span>{activeSponge}<br />base</span></div>
+        ? <img src={cakeBaseSrc} alt="cake base" className="cake-layer" />
+        : <div className="cake-layer cake-placeholder-layer">
+            <span>{activeSponge}<br />base</span>
+          </div>
       }
 
       {frostingBaseSrc && (
-        <img key={`frosting-base-${activeFrosting}`} src={frostingBaseSrc} alt="frosting base" className="cake-layer" />
+        <img src={frostingBaseSrc} alt="frosting base" className="cake-layer" />
       )}
 
       {fillingSrc && (
-        <img key={`filling-${activeFilling}`} src={fillingSrc} alt="filling" className="cake-layer" />
+        <img src={fillingSrc} alt="filling" className="cake-layer" />
       )}
 
       {cakeTopSrc && animationReady && (
         <img
-          key={`cake-top-${activeSponge}`}
           src={cakeTopSrc}
           alt="cake top"
           className={`cake-layer cake-animated ${topCakeIn ? "drop-in" : "pre-drop"}`}
@@ -453,7 +458,6 @@ function CakePreview({ sponge, frostingFlavor, filling, fillingVisited, toppings
 
       {frostingTopSrc && animationReady && (
         <img
-          key={`frosting-top-${activeFrosting}`}
           src={frostingTopSrc}
           alt="frosting top"
           className={`cake-layer cake-animated ${topFrostingIn ? "drop-in" : "pre-drop"}`}
@@ -522,15 +526,16 @@ const EMPTY = {
 };
 
 export default function App() {
-  usePreloadImages();
-
   const [picks, setPicks]         = useState(EMPTY);
   const [tab, setTab]             = useState("name");
   const [submitted, setSubmitted] = useState(false);
   const [msg, setMsg]             = useState("");
   const [fillingVisited, setFillingVisited] = useState(false);
 
+  // random base shown on load before user picks a sponge
   const [randomBase] = useState(() => pickRandom(BASE_SPONGE).id);
+
+  // ref that CakePreview writes its current layer srcs into
   const stageRef = useRef([]);
 
   function pick(field, value) {
@@ -556,15 +561,26 @@ export default function App() {
     setPicks((p) => ({ ...p, filling: p.filling === id ? null : id }));
   }
 
+  // ── RANDOMIZE ALL ──
   function randomizeAll() {
     const base         = pickRandom(BASE_SPONGE).id;
     const frostingType = pickRandom(FROSTING_TYPES).id;
     const frostingFlav = pickRandom(FROSTING_FLAVORS).id;
     const filling      = pickRandom(FILLINGS).id;
-    const count        = Math.floor(Math.random() * 3) + 1;
-    const toppings     = [...TOPPINGS].sort(() => Math.random() - 0.5).slice(0, count).map(t => t.id);
 
-    setPicks((p) => ({ ...p, base, frostingType, frostingFlavor: frostingFlav, filling, toppings }));
+    // pick 1–3 random toppings (no duplicates)
+    const count    = Math.floor(Math.random() * 3) + 1;
+    const shuffled = [...TOPPINGS].sort(() => Math.random() - 0.5);
+    const toppings = shuffled.slice(0, count).map((t) => t.id);
+
+    setPicks((p) => ({
+      ...p,
+      base,
+      frostingType,
+      frostingFlavor: frostingFlav,
+      filling,
+      toppings,
+    }));
     setFillingVisited(true);
   }
 
@@ -607,6 +623,7 @@ export default function App() {
     stageRef,
   };
 
+  // ── confirmation screen ──
   if (submitted) {
     return (
       <div className="app">
@@ -633,6 +650,7 @@ export default function App() {
     );
   }
 
+  // ── builder ──
   return (
     <div className="app">
       <ShopWindow {...sharedWindowProps} />
@@ -668,10 +686,13 @@ export default function App() {
           {tab === "base" && (
             <div className="option-grid">
               {BASE_SPONGE.map((item) => (
-                <Thumb key={item.id} item={item}
+                <Thumb
+                  key={item.id}
+                  item={item}
                   imgSrc={CAKE_BASE_IMGS[item.id] || null}
                   selected={picks.base === item.id}
-                  onClick={() => pick("base", item.id)} />
+                  onClick={() => pick("base", item.id)}
+                />
               ))}
             </div>
           )}
@@ -682,9 +703,11 @@ export default function App() {
                 <p className="section-sublabel">type</p>
                 <div className="frosting-type-row">
                   {FROSTING_TYPES.map((t) => (
-                    <div key={t.id}
+                    <div
+                      key={t.id}
                       className={`type-chip ${picks.frostingType === t.id ? "selected" : ""}`}
-                      onClick={() => pick("frostingType", t.id)}>
+                      onClick={() => pick("frostingType", t.id)}
+                    >
                       {t.label}
                     </div>
                   ))}
@@ -695,10 +718,13 @@ export default function App() {
                 <p className="section-sublabel">flavor</p>
                 <div className="option-grid">
                   {FROSTING_FLAVORS.map((item) => (
-                    <Thumb key={item.id} item={item}
+                    <Thumb
+                      key={item.id}
+                      item={item}
                       imgSrc={FROSTING_BASE_IMGS[item.id] || null}
                       selected={picks.frostingFlavor === item.id}
-                      onClick={() => pick("frostingFlavor", item.id)} />
+                      onClick={() => pick("frostingFlavor", item.id)}
+                    />
                   ))}
                 </div>
               </div>
@@ -710,10 +736,13 @@ export default function App() {
               <p className="optional-note">optional — leave empty to skip</p>
               <div className="option-grid">
                 {FILLINGS.map((item) => (
-                  <Thumb key={item.id} item={item}
+                  <Thumb
+                    key={item.id}
+                    item={item}
                     imgSrc={FILLING_IMGS[item.id] || null}
                     selected={picks.filling === item.id}
-                    onClick={() => handleFillingPick(item.id)} />
+                    onClick={() => handleFillingPick(item.id)}
+                  />
                 ))}
               </div>
             </>
@@ -724,10 +753,13 @@ export default function App() {
               <p className="optional-note">optional — pick as many as you like</p>
               <div className="option-grid">
                 {TOPPINGS.map((item) => (
-                  <Thumb key={item.id} item={item}
+                  <Thumb
+                    key={item.id}
+                    item={item}
                     imgSrc={TOPPING_IMGS[item.id] || null}
                     selected={picks.toppings.includes(item.id)}
-                    onClick={() => toggleTopping(item.id)} />
+                    onClick={() => toggleTopping(item.id)}
+                  />
                 ))}
               </div>
             </>
@@ -751,8 +783,12 @@ export default function App() {
                 ))}
               </div>
               <div className="submit-area">
-                <button className="submit-btn" onClick={handleSubmit}>order my cake ✿</button>
-                <button className="randomize-btn" onClick={randomizeAll}>🎲 randomize!</button>
+                <button className="submit-btn" onClick={handleSubmit}>
+                  order my cake ✿
+                </button>
+                <button className="randomize-btn" onClick={randomizeAll} title="randomize everything!">
+                  🎲 randomize!
+                </button>
                 {msg && <p className="submit-msg">{msg}</p>}
               </div>
             </>
