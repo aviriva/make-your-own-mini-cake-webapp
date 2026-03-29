@@ -575,7 +575,20 @@ export default function App() {
     if (!picks.frostingType)   missing.push("frosting type");
     if (!picks.frostingFlavor) missing.push("frosting flavor");
     if (missing.length > 0) { setMsg(`still need: ${missing.join(", ")}`); return; }
-    console.log("ORDER SUBMITTED:", JSON.stringify(picks, null, 2));
+
+    const base   = "https://docs.google.com/forms/d/e/1FAIpQLSfIlAttEYs81shc4A0Rf5bZ4Cjxe4HOr7zRTkl9gBuyq9oDlg/viewform";
+    const params = new URLSearchParams({
+      "entry.1011936559": picks.name,
+      "entry.1251549459": labelOf(BASE_SPONGE, picks.base),
+      "entry.2005188472": labelOf(FROSTING_TYPES, picks.frostingType),
+      "entry.52214445":   labelOf(FROSTING_FLAVORS, picks.frostingFlavor),
+      "entry.724211256":  picks.filling ? labelOf(FILLINGS, picks.filling) : "none",
+      "entry.821832428":  picks.toppings.length
+                            ? picks.toppings.map(t => labelOf(TOPPINGS, t)).join(", ")
+                            : "none",
+    });
+
+    window.open(`${base}?usp=pp_url&${params.toString()}`, "_blank");
     setMsg("");
     setSubmitted(true);
   }
@@ -614,7 +627,7 @@ export default function App() {
         <div className="bottom-panel">
           <div className="confirm-wrap">
             <h2>order received!</h2>
-            <p>i'll get started on your cake, {picks.name}!</p>
+            <p>a pre-filled order form just opened in a new tab — download your cake image below, attach it to the form, then hit submit! ♡</p>
             <div className="confirm-box" style={{ fontVariantLigatures: "none" }}>
               <p><strong>name:</strong> {picks.name}</p>
               <p><strong>sponge:</strong> {labelOf(BASE_SPONGE, picks.base)}</p>
@@ -625,7 +638,6 @@ export default function App() {
             <button className="submit-btn" onClick={handleDownload}>
               download my cake ↓
             </button>
-            <p className="confirm-note">attach the image to your google form order!</p>
             <button className="reset-btn" onClick={reset}>← start over</button>
           </div>
         </div>
