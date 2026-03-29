@@ -627,7 +627,7 @@ export default function App() {
         <div className="bottom-panel">
           <div className="confirm-wrap">
             <h2>order received!</h2>
-            <p>a pre-filled order form just opened in a new tab! download your cake image below, attach it to the form, then hit submit! ♡</p>
+            <p>a pre-filled order form just opened in a new tab! download your cake image below, attach it to the form, then hit submit!</p>
             <div className="confirm-box" style={{ fontVariantLigatures: "none" }}>
               <p><strong>name:</strong> {picks.name}</p>
               <p><strong>sponge:</strong> {labelOf(BASE_SPONGE, picks.base)}</p>
