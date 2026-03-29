@@ -1,0 +1,416 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap');
+
+:root {
+  --cream: #FDF6ED;
+  --paper: #FFFAF3;
+  --ink: #2C1A0E;
+  --ink-light: #7A5C3E;
+  --pink-dark: #C97A7A;
+  --blush: #FDE8E8;
+  --sage: #C8D8B8;
+  --butter: #F5EAC0;
+  --brown-light: #E8CEAD;
+  --window-bg: #FBF4E8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Patrick Hand SC', 'Comic Sans MS', cursive;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── shop window ── */
+.shop-window {
+  position: relative;
+  margin: 0 1rem 0;
+  background: var(--window-bg);
+  border: 3px solid var(--ink);
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 var(--ink);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+.window-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 80%, #F5D5B855 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 75% 75%, #DDD0EC44 0%, transparent 65%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, #C8D8B833 0%, transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 110%, #F5EAC044 0%, transparent 55%);
+}
+
+.window-rays {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 28px,
+    rgba(255,255,255,0.18) 28px,
+    rgba(255,255,255,0.18) 36px
+  );
+  pointer-events: none;
+}
+
+.window-frame-h {
+  position: absolute;
+  top: 38%; left: 0; right: 0;
+  height: 3px;
+  background: var(--ink);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.window-frame-v {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 3px;
+  background: var(--ink);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.window-title {
+  text-align: center;
+  padding: 1.25rem 1rem 0.6rem;
+}
+
+.window-title h1 { font-size: 1.5rem; color: var(--ink); letter-spacing: 0.5px; }
+.window-title p  { font-size: 0.82rem; color: var(--ink-light); margin-top: 4px; }
+.deco { color: var(--pink-dark); }
+
+/* your wallpaper/bg drawing — uncomment once you have the file */
+.window-user-bg {
+  position: absolute;
+  inset: 0;
+  /* background-image: url('/src/assets/window-bg.png'); */
+  background-size: cover;
+  background-position: center;
+}
+
+/* ── bottom panel ── */
+.bottom-panel {
+  flex: 1;
+  margin: 0 1rem 1.5rem;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-top: none;
+  box-shadow: 4px 4px 0 var(--ink);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+/* ── scrollable category tabs ── */
+.cat-scroll {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 2.5px solid var(--ink);
+  background: var(--blush);
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-family: 'Patrick Hand SC', 'Comic Sans MS', cursive;
+  font-size: 0.85rem;
+  font-style: normal;
+  font-variant-ligatures: none;
+  color: var(--ink-light);
+  background: none;
+  border: none;
+  border-right: 1.5px solid var(--brown-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+}
+.cat-tab:hover { background: var(--butter); color: var(--ink); }
+.cat-tab.active {
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-style: normal;
+}
+.cat-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 3px;
+  background: var(--paper);
+}
+
+/* ── option scroll area ── */
+.option-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--brown-light) transparent;
+}
+
+.optional-note {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+/* ── frosting combined section ── */
+.frosting-section { display: flex; flex-direction: column; gap: 12px; }
+
+.frosting-type-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.type-chip {
+  padding: 8px 6px;
+  border: 2px solid var(--brown-light);
+  border-radius: 4px;
+  background: var(--cream);
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.12s;
+}
+.type-chip:hover { background: var(--butter); border-color: var(--ink); color: var(--ink); }
+.type-chip.selected {
+  background: var(--blush);
+  border-color: var(--pink-dark);
+  border-width: 2.5px;
+  color: var(--ink);
+}
+
+.frosting-divider {
+  border: none;
+  border-top: 1.5px dashed var(--brown-light);
+}
+
+.section-sublabel {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  margin-bottom: 8px;
+}
+
+/* ── option grid ── */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+/* ── thumb card ── */
+.thumb {
+  aspect-ratio: 1;
+  border: 2px solid var(--brown-light);
+  border-radius: 4px;
+  background: var(--cream);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 4px 5px;
+  transition: border-color 0.12s, background 0.12s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+.thumb:hover { border-color: var(--ink); background: var(--butter); transform: translateY(-1px); }
+.thumb.selected { border-color: var(--pink-dark); border-width: 2.5px; background: var(--blush); }
+.thumb.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 3px; right: 5px;
+  font-size: 0.75rem;
+  color: var(--pink-dark);
+}
+
+/* drawing placeholder box — replace with <img> when you have art */
+.thumb-drawing {
+  width: 60%;
+  aspect-ratio: 1;
+  border: 1.5px dashed var(--brown-light);
+  border-radius: 3px;
+  background: var(--window-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.thumb-drawing img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.thumb-drawing-placeholder {
+  font-size: 0.55rem;
+  color: var(--brown-light);
+  text-align: center;
+  line-height: 1.3;
+  padding: 2px;
+}
+
+.thumb-label {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 0.7rem;
+  color: var(--ink-light);
+  text-align: center;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+/* ── name panel ── */
+.name-panel { padding: 1rem; display: flex; flex-direction: column; gap: 10px; }
+.name-panel label { font-size: 0.92rem; color: var(--ink-light); }
+.name-panel input {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 1.05rem; color: var(--ink);
+  background: var(--cream);
+  border: 2.5px solid var(--brown-light);
+  border-radius: 4px; padding: 8px 12px; outline: none;
+  transition: border-color 0.15s;
+}
+.name-panel input:focus { border-color: var(--pink-dark); }
+
+/* ── order panel ── */
+.order-panel { padding: 0.75rem 1rem 0.5rem; display: flex; flex-direction: column; gap: 6px; }
+.order-row { display: flex; gap: 10px; font-size: 0.88rem; align-items: baseline; }
+.order-row .o-label { color: var(--ink-light); min-width: 90px; flex-shrink: 0; font-size: 0.8rem; }
+.order-row strong { color: var(--ink); }
+.order-row em { color: var(--brown-light); font-style: italic; }
+.order-divider { border: none; border-top: 1.5px dashed var(--brown-light); margin: 6px 0; }
+
+.submit-area { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.submit-btn {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 1.05rem; color: var(--paper);
+  background: var(--ink); border: none; border-radius: 5px;
+  padding: 10px 30px; cursor: pointer;
+  box-shadow: 3px 3px 0 var(--pink-dark);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.submit-btn:hover  { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--pink-dark); }
+.submit-btn:active { transform: translate(2px,2px);   box-shadow: 1px 1px 0 var(--pink-dark); }
+.submit-msg { font-size: 0.82rem; color: var(--pink-dark); }
+
+.randomize-btn {
+  font-family: 'Patrick Hand SC', cursive;
+  font-variant-ligatures: none;
+  font-size: 0.95rem;
+  color: var(--ink-light);
+  background: none;
+  border: 2px dashed var(--brown-light);
+  border-radius: 5px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.randomize-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--butter); }
+
+.confirm-note {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  font-variant-ligatures: none;
+  font-style: italic;
+}
+
+/* ── cake layers ── */
+.cake-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cake-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cake-placeholder-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--brown-light);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.pre-drop {
+  opacity: 0;
+  transform: translateY(-60px);
+  pointer-events: none;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-60px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+
+.drop-in {
+  animation: dropIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.cake-empty-hint {
+  font-size: 0.78rem;
+  color: var(--brown-light);
+  text-align: center;
+  padding: 1rem;
+  line-height: 1.7;
+  z-index: 1;
+}
+
+.cake-empty-hint small { font-size: 0.65rem; opacity: 0.7; }
+
+/* ── confirm ── */
+.confirm-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem 1.5rem; gap: 1rem; text-align: center;
+}
+.confirm-wrap h2 { font-size: 1.6rem; color: var(--ink); }
+.confirm-wrap > p { font-size: 0.9rem; color: var(--ink-light); max-width: 300px; line-height: 1.5; }
+.confirm-box {
+  background: var(--blush); border: 2px solid var(--pink-dark);
+  border-radius: 6px; padding: 1rem 1.25rem;
+  width: 100%; text-align: left; display: flex; flex-direction: column; gap: 5px;
+}
+.confirm-box p { font-size: 0.88rem; color: var(--ink); line-height: 1.6; }
+.reset-btn {
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 0.88rem; color: var(--ink-light);
+  background: none; border: 2px dashed var(--brown-light);
+  border-radius: 5px; padding: 6px 20px; cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.reset-btn:hover { border-color: var(--ink); color: var(--ink); }
