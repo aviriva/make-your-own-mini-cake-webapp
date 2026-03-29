@@ -96,7 +96,7 @@ body {
 .window-user-bg {
   position: absolute;
   inset: 0;
-  /* background-image: url('/src/assets/window-bg.png'); */
+  /* background-image: url('/src/assets/window-bg.PNG'); */
   background-size: cover;
   background-position: center;
 }

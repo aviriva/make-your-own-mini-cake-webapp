@@ -5,79 +5,79 @@ import "./App.css";
 //  ASSET IMPORTS
 // ─────────────────────────────────────────────
 
-import cakeChocolateBase  from "./assets/cake/chocolate-base.png";
-import cakeVanillaBase    from "./assets/cake/vanilla-base.png";
-import cakeYellowBase     from "./assets/cake/yellow-base.png";
-import cakeRedVelvetBase  from "./assets/cake/red-velvet-base.png";
-import cakeBrownieBase    from "./assets/cake/brownie-base.png";
-import cakeLemonBase      from "./assets/cake/lemon-base.png";
-import cakeStrawberryBase from "./assets/cake/strawberry-base.png";
-import cakeMatchaBase     from "./assets/cake/matcha-base.png";
-import cakeBirthdayBase   from "./assets/cake/birthday-cake-base.png";
-import cakeCarrotBase     from "./assets/cake/carrot-base.png";
-import cakeBananaBase     from "./assets/cake/banana-base.png";
+import cakeChocolateBase  from "./assets/cake/chocolate-base.PNG";
+import cakeVanillaBase    from "./assets/cake/vanilla-base.PNG";
+import cakeYellowBase     from "./assets/cake/yellow-base.PNG";
+import cakeRedVelvetBase  from "./assets/cake/red-velvet-base.PNG";
+import cakeBrownieBase    from "./assets/cake/brownie-base.PNG";
+import cakeLemonBase      from "./assets/cake/lemon-base.PNG";
+import cakeStrawberryBase from "./assets/cake/strawberry-base.PNG";
+import cakeMatchaBase     from "./assets/cake/matcha-base.PNG";
+import cakeBirthdayBase   from "./assets/cake/birthday-cake-base.PNG";
+import cakeCarrotBase     from "./assets/cake/carrot-base.PNG";
+import cakeBananaBase     from "./assets/cake/banana-base.PNG";
 
-import cakeChocolateTop   from "./assets/cake/chocolate-top.png";
-import cakeVanillaTop     from "./assets/cake/vanilla-top.png";
-import cakeYellowTop      from "./assets/cake/yellow-top.png";
-import cakeRedVelvetTop   from "./assets/cake/red-velvet-top.png";
-import cakeBrownieTop     from "./assets/cake/brownie-top.png";
-import cakeLemonTop       from "./assets/cake/lemon-top.png";
-import cakeStrawberryTop  from "./assets/cake/strawberry-top.png";
-import cakeMatchaTop      from "./assets/cake/matcha-top.png";
-import cakeBirthdayTop    from "./assets/cake/birthday-cake-top.png";
-import cakeCarrotTop      from "./assets/cake/carrot-top.png";
-import cakeBananaTop      from "./assets/cake/banana-top.png";
+import cakeChocolateTop   from "./assets/cake/chocolate-top.PNG";
+import cakeVanillaTop     from "./assets/cake/vanilla-top.PNG";
+import cakeYellowTop      from "./assets/cake/yellow-top.PNG";
+import cakeRedVelvetTop   from "./assets/cake/red-velvet-top.PNG";
+import cakeBrownieTop     from "./assets/cake/brownie-top.PNG";
+import cakeLemonTop       from "./assets/cake/lemon-top.PNG";
+import cakeStrawberryTop  from "./assets/cake/strawberry-top.PNG";
+import cakeMatchaTop      from "./assets/cake/matcha-top.PNG";
+import cakeBirthdayTop    from "./assets/cake/birthday-cake-top.PNG";
+import cakeCarrotTop      from "./assets/cake/carrot-top.PNG";
+import cakeBananaTop      from "./assets/cake/banana-top.PNG";
 
-import frostingVanillaBase    from "./assets/frosting/vanilla-base.png";
-import frostingCaramelBase    from "./assets/frosting/caramel-base.png";
-import frostingChocolateBase  from "./assets/frosting/chocolate-base.png";
-import frostingStrawberryBase from "./assets/frosting/strawberry-base.png";
-import frostingMatchaBase     from "./assets/frosting/matcha-base.png";
-import frostingLemonBase      from "./assets/frosting/lemon-base.png";
-import frostingRaspberryBase  from "./assets/frosting/raspberry-base.png";
-import frostingBlueberryBase  from "./assets/frosting/blueberry-base.png";
-import frostingMangoBase      from "./assets/frosting/mango-base.png";
-import frostingChaiBase       from "./assets/frosting/chai-base.png";
-import frostingCherryBase     from "./assets/frosting/cherry-base.png";
+import frostingVanillaBase    from "./assets/frosting/vanilla-base.PNG";
+import frostingCaramelBase    from "./assets/frosting/caramel-base.PNG";
+import frostingChocolateBase  from "./assets/frosting/chocolate-base.PNG";
+import frostingStrawberryBase from "./assets/frosting/strawberry-base.PNG";
+import frostingMatchaBase     from "./assets/frosting/matcha-base.PNG";
+import frostingLemonBase      from "./assets/frosting/lemon-base.PNG";
+import frostingRaspberryBase  from "./assets/frosting/raspberry-base.PNG";
+import frostingBlueberryBase  from "./assets/frosting/blueberry-base.PNG";
+import frostingMangoBase      from "./assets/frosting/mango-base.PNG";
+import frostingChaiBase       from "./assets/frosting/chai-base.PNG";
+import frostingCherryBase     from "./assets/frosting/cherry-base.PNG";
 
-import frostingVanillaTop     from "./assets/frosting/vanilla-top.png";
-import frostingCaramelTop     from "./assets/frosting/caramel-top.png";
-import frostingChocolateTop   from "./assets/frosting/chocolate-top.png";
-import frostingStrawberryTop  from "./assets/frosting/strawberry-top.png";
-import frostingMatchaTop      from "./assets/frosting/matcha-top.png";
-import frostingLemonTop       from "./assets/frosting/lemon-top.png";
-import frostingRaspberryTop   from "./assets/frosting/raspberry-top.png";
-import frostingBlueberryTop   from "./assets/frosting/blueberry-top.png";
-import frostingMangoTop       from "./assets/frosting/mango-top.png";
-import frostingChaiTop        from "./assets/frosting/chai-top.png";
-import frostingCherryTop      from "./assets/frosting/cherry-top.png";
+import frostingVanillaTop     from "./assets/frosting/vanilla-top.PNG";
+import frostingCaramelTop     from "./assets/frosting/caramel-top.PNG";
+import frostingChocolateTop   from "./assets/frosting/chocolate-top.PNG";
+import frostingStrawberryTop  from "./assets/frosting/strawberry-top.PNG";
+import frostingMatchaTop      from "./assets/frosting/matcha-top.PNG";
+import frostingLemonTop       from "./assets/frosting/lemon-top.PNG";
+import frostingRaspberryTop   from "./assets/frosting/raspberry-top.PNG";
+import frostingBlueberryTop   from "./assets/frosting/blueberry-top.PNG";
+import frostingMangoTop       from "./assets/frosting/mango-top.PNG";
+import frostingChaiTop        from "./assets/frosting/chai-top.PNG";
+import frostingCherryTop      from "./assets/frosting/cherry-top.PNG";
 
-import fillingStrawberryJam   from "./assets/filling/strawberry-jam.png";
-import fillingRaspberryJam    from "./assets/filling/raspberry-jam.png";
-import fillingBlueberryJam    from "./assets/filling/blueberry-jam.png";
-import fillingOrangeJam       from "./assets/filling/orange-jam.png";
-import fillingGuavaJam        from "./assets/filling/guava-jam.png";
-import fillingLemonCurd       from "./assets/filling/lemon-curd.png";
-import fillingCustard         from "./assets/filling/custard.png";
-import fillingChocolateSauce  from "./assets/filling/chocolate-sauce.png";
-import fillingCaramelSauce    from "./assets/filling/caramel-sauce.png";
-import fillingPeachJam        from "./assets/filling/peach-jam.png";
+import fillingStrawberryJam   from "./assets/filling/strawberry-jam.PNG";
+import fillingRaspberryJam    from "./assets/filling/raspberry-jam.PNG";
+import fillingBlueberryJam    from "./assets/filling/blueberry-jam.PNG";
+import fillingOrangeJam       from "./assets/filling/orange-jam.PNG";
+import fillingGuavaJam        from "./assets/filling/guava-jam.PNG";
+import fillingLemonCurd       from "./assets/filling/lemon-curd.PNG";
+import fillingCustard         from "./assets/filling/custard.PNG";
+import fillingChocolateSauce  from "./assets/filling/chocolate-sauce.PNG";
+import fillingCaramelSauce    from "./assets/filling/caramel-sauce.PNG";
+import fillingPeachJam        from "./assets/filling/peach-jam.PNG";
 
-import toppingStrawberries    from "./assets/topping/strawberries.png";
-import toppingRaspberries     from "./assets/topping/raspberries.png";
-import toppingBlueberries     from "./assets/topping/blueberries.png";
-import toppingOranges         from "./assets/topping/oranges.png";
-import toppingLemons          from "./assets/topping/lemons.png";
-import toppingCaramel         from "./assets/topping/caramel.png";
-import toppingChocolate       from "./assets/topping/chocolate.png";
-import toppingMarshmallows    from "./assets/topping/marshmallows.png";
-import toppingApples          from "./assets/topping/apples.png";
-import toppingMint            from "./assets/topping/mint.png";
-import toppingPeaches         from "./assets/topping/peaches.png";
-import toppingCherries        from "./assets/topping/cherries.png";
+import toppingStrawberries    from "./assets/topping/strawberries.PNG";
+import toppingRaspberries     from "./assets/topping/raspberries.PNG";
+import toppingBlueberries     from "./assets/topping/blueberries.PNG";
+import toppingOranges         from "./assets/topping/oranges.PNG";
+import toppingLemons          from "./assets/topping/lemons.PNG";
+import toppingCaramel         from "./assets/topping/caramel.PNG";
+import toppingChocolate       from "./assets/topping/chocolate.PNG";
+import toppingMarshmallows    from "./assets/topping/marshmallows.PNG";
+import toppingApples          from "./assets/topping/apples.PNG";
+import toppingMint            from "./assets/topping/mint.PNG";
+import toppingPeaches         from "./assets/topping/peaches.PNG";
+import toppingCherries        from "./assets/topping/cherries.PNG";
 
-import windowBgSrc from "./assets/window-bg.png";
+import windowBgSrc from "./assets/window-bg.PNG";
 
 // ─────────────────────────────────────────────
 //  ASSET MAPS
@@ -278,7 +278,7 @@ function Thumb({ item, selected, onClick, imgSrc }) {
 //  Draws all visible layer srcs onto a canvas
 //  and triggers a PNG download.
 // ─────────────────────────────────────────────
-async function downloadCakeImage(layerSrcs, filename = "my-cake.png") {
+async function downloadCakeImage(layerSrcs, filename = "my-cake.PNG") {
   const SIZE = 600;
   const canvas = document.createElement("canvas");
   canvas.width  = SIZE;
@@ -606,7 +606,7 @@ export default function App() {
 
   function handleDownload() {
     const name = picks.name.trim() || "cake";
-    downloadCakeImage(stageRef.current, `${name}-cake.png`);
+    downloadCakeImage(stageRef.current, `${name}-cake.PNG`);
   }
 
   const toppingLabels = picks.toppings.length
