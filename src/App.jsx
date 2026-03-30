@@ -603,7 +603,7 @@ export default function App() {
     // send order text to you via EmailJS (no image — too large for free tier)
     try {
       await emailjs.send(
-        "service_bk8svmz",
+        "service_8izvuag",
         "template_elzwmjv",
         {
           name:            picks.name,
