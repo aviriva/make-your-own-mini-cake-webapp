@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import emailjs from "@emailjs/browser";
 
 // ─────────────────────────────────────────────
 //  ASSET IMPORTS
@@ -569,7 +568,7 @@ export default function App() {
     setFillingVisited(true);
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     const missing = [];
     if (!picks.name.trim())    missing.push("your name");
     if (!picks.base)           missing.push("sponge");
@@ -577,61 +576,21 @@ export default function App() {
     if (!picks.frostingFlavor) missing.push("frosting flavor");
     if (missing.length > 0) { setMsg(`still need: ${missing.join(", ")}`); return; }
 
-    setMsg("sending your order...");
+    const base   = "https://docs.google.com/forms/d/e/1FAIpQLSfIlAttEYs81shc4A0Rf5bZ4Cjxe4HOr7zRTkl9gBuyq9oDlg/viewform";
+    const params = new URLSearchParams({
+      "entry.1011936559": picks.name,
+      "entry.1251549459": labelOf(BASE_SPONGE, picks.base),
+      "entry.2005188472": labelOf(FROSTING_TYPES, picks.frostingType),
+      "entry.52214445":   labelOf(FROSTING_FLAVORS, picks.frostingFlavor),
+      "entry.724211256":  picks.filling ? labelOf(FILLINGS, picks.filling) : "none",
+      "entry.821832428":  picks.toppings.length
+                            ? picks.toppings.map(t => labelOf(TOPPINGS, t)).join(", ")
+                            : "none",
+    });
 
-    // render cake to canvas and get base64
-    const SIZE = 600;
-    const canvas = document.createElement("canvas");
-    canvas.width = SIZE;
-    canvas.height = SIZE;
-    const ctx = canvas.getContext("2d");
-    for (const src of stageRef.current) {
-      if (!src) continue;
-      await new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => { ctx.drawImage(img, 0, 0, SIZE, SIZE); resolve(); };
-        img.onerror = resolve;
-        img.src = src;
-      });
-    }
-    const cakeImage = canvas.toDataURL("image/png");
-
-    // trigger download automatically
-    const link = document.createElement("a");
-    link.download = `${picks.name.trim() || "cake"}-cake.PNG`;
-    link.href = cakeImage;
-    link.click();
-
-    // send email via EmailJS
-    try {
-      await emailjs.send(
-        "service_bk8svmz",
-        "template_elzwmjv",
-        {
-          name:            picks.name,
-          sponge:          labelOf(BASE_SPONGE, picks.base),
-          frosting_type:   labelOf(FROSTING_TYPES, picks.frostingType),
-          frosting_flavor: labelOf(FROSTING_FLAVORS, picks.frostingFlavor),
-          filling:         picks.filling ? labelOf(FILLINGS, picks.filling) : "none",
-          toppings:        picks.toppings.length
-                             ? picks.toppings.map(t => labelOf(TOPPINGS, t)).join(", ")
-                             : "none",
-          cake_image:      cakeImage, // base64 image string
-        },
-        "sFywDORtFH7ORF22g"
-      );
-    } catch (err) {
-      console.error("EmailJS error:", err);
-    }
-
+    window.open(`${base}?usp=pp_url&${params.toString()}`, "_blank");
     setMsg("");
     setSubmitted(true);
-  }
-
-  function handleDownload() {
-    const name = picks.name.trim() || "cake";
-    downloadCakeImage(stageRef.current, `${name}-cake.PNG`);
   }
 
   function reset() {
@@ -640,6 +599,11 @@ export default function App() {
     setSubmitted(false);
     setMsg("");
     setFillingVisited(false);
+  }
+
+  function handleDownload() {
+    const name = picks.name.trim() || "cake";
+    downloadCakeImage(stageRef.current, `${name}-cake.PNG`);
   }
 
   const toppingLabels = picks.toppings.length
@@ -663,7 +627,7 @@ export default function App() {
         <div className="bottom-panel">
           <div className="confirm-wrap">
             <h2>order received!</h2>
-            <p>your cake is downloading and i got your order — see you soon, {picks.name}! ♡</p>
+            <p>a pre-filled order form just opened in a new tab! download your cake image below, attach it to the form, then hit submit!</p>
             <div className="confirm-box" style={{ fontVariantLigatures: "none" }}>
               <p><strong>name:</strong> {picks.name}</p>
               <p><strong>sponge:</strong> {labelOf(BASE_SPONGE, picks.base)}</p>
@@ -671,6 +635,9 @@ export default function App() {
               <p><strong>filling:</strong> {picks.filling ? labelOf(FILLINGS, picks.filling) : "none"}</p>
               <p><strong>toppings:</strong> {toppingLabels}</p>
             </div>
+            <button className="submit-btn" onClick={handleDownload}>
+              download my cake ↓
+            </button>
             <button className="reset-btn" onClick={reset}>← start over</button>
           </div>
         </div>
